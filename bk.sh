@@ -7,16 +7,16 @@
 # Download needed files
 KERNEL_DIR=`pwd`
 TC_BRANCH="16"
-TC_DIR="$HOME/tc/avalanche/$TC_BRANCH"
-TC_URL="https://gitlab.com/willtanoe/avalanche-clang.git"
+TC_DIR="$HOME/kernel-build-tools/clang/$TC_BRANCH"
+TC_URL="https://gitlab.com/meloalfa159/clang-16.git"
 TC_GIT_BRANCH=$TC_BRANCH
 
-AK3_URL="https://github.com/willtanoe/AnyKernel3"
-AK3_BRANCH="courbet"
-AK3_DIR="$HOME/tc/AK3/$AK3_BRANCH"
+AK3_URL="https://github.com/meloalfa159/AnyKernel3.git"
+AK3_BRANCH="master"
+AK3_DIR="$HOME/kernel-build-tools/anykernel"
 # Check if toolchain is exist
 if ! [ -d "$TC_DIR" ]; then
-		echo "Avalanche clang not found! Cloning to $TC_DIR..."
+		echo "Clang not found! Cloning to $TC_DIR..."
 		if ! git clone --single-branch --depth=1 -b $TC_GIT_BRANCH $TC_URL $TC_DIR; then
 				echo "Cloning failed! Aborting..."
 				exit 1
@@ -90,12 +90,13 @@ done
 
 # Delete old file before build
 if [[ $1 = "-c" || $1 = "--clean" ]]; then
-		rm -rf out
+		rm -rf $OUT
 fi
 
 # Make out folder
-mkdir -p out
-make  $PROC O=out ARCH=arm64 $DEFCONFIG \
+OUT="$HOME/kernel-out"
+mkdir -p $HOME/kernel-out
+make  $PROC O=$OUT ARCH=arm64 $DEFCONFIG \
 		CLANG_PATH=$TC_DIR/bin \
 		CC="ccache clang" \
 		CXX="ccache clang++" \
@@ -115,12 +116,12 @@ make  $PROC O=out ARCH=arm64 $DEFCONFIG \
 # Regened defconfig 
 #  Test use ccache. -j$(nproc --all)
 if [[ $1 == "-r" || $1 == "--regen" ]]; then
-		   cp out/.config arch/arm64/configs/$DEFCONFIG
+		   cp $OUT/.config arch/arm64/configs/$DEFCONFIG
 		   echo -e "\nRegened defconfig succesfully!"
 		   exit 0
 else
 		echo -e "\nStarting compilation...\n"
-		make $PROC O=out ARCH=arm64 \
+		make $PROC O=$OUT ARCH=arm64 \
 			CLANG_PATH=$TC_DIR/bin \
 			CC="ccache clang" \
 			CXX="ccache clang++" \
@@ -141,11 +142,11 @@ fi
 
 # Creating zip flashable file
 function create_zip {
-		#Copy AK3 to out/Anykernel13
+		#Copy AK3 to out/Anykernel3
 		cp -r $AK3_DIR AnyKernel3
-		cp out/arch/arm64/boot/Image.gz AnyKernel3
-		cp out/arch/arm64/boot/dtbo.img AnyKernel3
-		cp out/arch/arm64/boot/dtb.img AnyKernel3
+		cp $OUT/arch/arm64/boot/Image.gz AnyKernel3
+		cp $OUT/arch/arm64/boot/dtbo.img AnyKernel3
+		cp $OUT/arch/arm64/boot/dtb.img AnyKernel3
 
 		# Change dir to AK3 to make zip kernel
 		cd AnyKernel3
@@ -154,7 +155,7 @@ function create_zip {
 		#Back to out folder and clean
 		cd ..
 		rm -rf AnyKernel3
-		rm -rf out/arch/arm64/boot ##keep boot to compile rom
+		rm -rf $OUT/arch/arm64/boot ##keep boot to compile rom
 		echo -e "\nCompleted in $((SECONDS / 60)) minute(s) and $((SECONDS % 60)) second(s) !"
 		echo "Zip: $ZIPNAME"
 }
@@ -162,14 +163,14 @@ function create_zip {
 function create_prebuilt {
 		#Copy Image.gz and dtbo.img to prebuilt folder
 		mkdir -p prebuilt
-		cp out/arch/arm64/boot/Image.gz prebuilt
-		cp out/arch/arm64/boot/dtbo.img prebuilt
-		cp out/arch/arm64/boot/dtb.img prebuilt
-		rm -rf out
+		cp $OUT/arch/arm64/boot/Image.gz prebuilt
+		cp $OUT/arch/arm64/boot/dtbo.img prebuilt
+		cp $OUT/arch/arm64/boot/dtb.img prebuilt
+		rm -rf $OUT
 		make clean
 }
 
-if [ -f "out/arch/arm64/boot/Image.gz" ] && [ -f "out/arch/arm64/boot/dtbo.img" ]; then
+if [ -f "$OUT/arch/arm64/boot/Image.gz" ] && [ -f "$OUT/arch/arm64/boot/dtbo.img" ]; then
 		 echo -e "\nKernel compiled succesfully! Zipping up...\n"
 		while read -p "Do you want to create Zip file (y/n/p)? " cchoice
 		do
