@@ -57,9 +57,6 @@ export STRIP="$TC_DIR/bin/$(echo "$(find "$TC_DIR/bin" -type f -name "aarch64-*-
 # Kernel Details
 KERNEL_VER="$(date '+%Y%m%d-%H%M')"
 
-clear
-
-
 function clean_all {
 		cd $KERNEL_DIR
 		echo
