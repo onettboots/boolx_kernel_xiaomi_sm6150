@@ -1282,4 +1282,3 @@ void binder_alloc_copy_from_buffer(struct binder_alloc *alloc,
 	binder_alloc_do_buffer_copy(alloc, false, buffer, buffer_offset,
 				    dest, bytes);
 }
-
