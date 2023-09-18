@@ -7,7 +7,7 @@
 # Download needed files
 KERNEL_DIR=`pwd`
 TC_BRANCH="17"
-TC_DIR="$HOME/kernel-build-tools/clang/$TC_BRANCH"
+TC_DIR="$HOME/toolchains/boolx-clang"
 TC_URL="https://gitlab.com/meloalfa159/playgroungtc.git"
 TC_GIT_BRANCH=$TC_BRANCH
 
@@ -40,7 +40,7 @@ fi
 # Setup environment
 DEFCONFIG="courbet_defconfig"
 SECONDS=0 # builtin bash timer
-ZIPNAME="AlfaKernel-melo159-$(date '+%Y%m%d-%H%M').zip"
+ZIPNAME="Iris-Nethunter-melo159-$(date '+%Y%m%d-%H%M').zip"
 export PROC="-j8"
 
 # Setup ccache environment
