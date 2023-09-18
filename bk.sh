@@ -40,7 +40,7 @@ fi
 # Setup environment
 DEFCONFIG="courbet_defconfig"
 SECONDS=0 # builtin bash timer
-ZIPNAME="Iris-Nethunter-melo159-$(date '+%Y%m%d-%H%M').zip"
+ZIPNAME="Boolx-Nethunter-melo159-$(date '+%Y%m%d-%H%M').zip"
 export PROC="-j8"
 
 # Setup ccache environment
@@ -108,7 +108,9 @@ make  $PROC O=$OUT ARCH=arm64 $DEFCONFIG \
 		STRIP=llvm-strip \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
 		CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
-		CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+		CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+		KBUILD_BUILD_USER=OnettBoots \
+		KBUILD_BUILD_HOST=SuperTermux
 
 # Regened defconfig 
 #  Test use ccache. -j$(nproc --all)
