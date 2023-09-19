@@ -6,9 +6,9 @@
 #
 # Download needed files
 KERNEL_DIR=`pwd`
-TC_BRANCH="17"
+TC_BRANCH="Clang-17.0_x86"
 TC_DIR="$HOME/toolchains/boolx-clang"
-TC_URL="https://gitlab.com/meloalfa159/playgroungtc.git"
+TC_URL="https://gitlab.com/onettboots/boolx-clang.git"
 TC_GIT_BRANCH=$TC_BRANCH
 
 AK3_URL="https://github.com/meloalfa159/AnyKernel3.git"
